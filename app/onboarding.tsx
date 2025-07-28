@@ -12,35 +12,14 @@ import {
 
 const { width } = Dimensions.get('window')
 
-interface OnboardingData {
-  id: number
-  title: string
-  subtitle: string
-  description: string
-  subdescription: string
-  buttonText?: string
-}
-
-const onboardingData: OnboardingData[] = [
-  {
-    id: 1,
-    title: 'Control over',
-    subtitle: 'your finances',
-    description: 'is in your hands',
-    subdescription: 'Your path to conscious spending and control starts here',
-    buttonText: 'Get started'
-  }
-]
-
-export default function OnboardingScreen() {
+export default function OnboardingPage() {
   const handleNext = () => {
     // Navegar a la pantalla principal
     router.push('/(tabs)')
   }
 
-  const renderOnboardingScreen = (item: OnboardingData, index: number) => (
-    <View key={item.id} style={styles.screenContainer}>
-      {/* Contenido principal */}
+  return (
+    <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
         {/* Iconos con gradientes */}
         <View style={styles.iconsContainer}>
@@ -92,31 +71,23 @@ export default function OnboardingScreen() {
 
         {/* Título principal */}
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.subtitle}>{item.subtitle}</Text>
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.title}>Control over</Text>
+          <Text style={styles.subtitle}>your finances</Text>
+          <Text style={styles.description}>is in your hands</Text>
         </View>
 
         {/* Subdescripción */}
-        <Text style={styles.subdescription}>{item.subdescription}</Text>
+        <Text style={styles.subdescription}>
+          Your path to conscious spending and control starts here
+        </Text>
 
         {/* Botón con flecha */}
         <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>{item.buttonText}</Text>
+          <Text style={styles.buttonText}>Get started</Text>
           <View style={styles.arrowContainer}>
             <Text style={styles.arrowText}>→</Text>
           </View>
         </TouchableOpacity>
-      </View>
-    </View>
-  )
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.scrollView}>
-        {onboardingData.map((item, index) =>
-          renderOnboardingScreen(item, index)
-        )}
       </View>
     </SafeAreaView>
   )
@@ -127,20 +98,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000' // Fondo negro puro como en la imagen
   },
-  scrollView: {
-    flex: 1
-  },
-  screenContainer: {
-    width,
-    flex: 1,
-    paddingHorizontal: 24,
-    justifyContent: 'center'
-  },
   contentContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 60
+    paddingVertical: 60,
+    paddingHorizontal: 24
   },
   iconsContainer: {
     marginBottom: 80,
