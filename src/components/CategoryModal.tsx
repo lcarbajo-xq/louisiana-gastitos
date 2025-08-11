@@ -1,20 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   FlatList,
   Modal,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View
 } from 'react-native'
 
-import { useCategoryStore } from '../store/categoryStore'
+import { useCategories, useCategorySearch } from '../hooks/useCategories'
+import { ExpenseCategory } from '../types/expense'
 
 interface CategoryModalProps {
   visible: boolean
   onClose: () => void
-  onSelect: (categoryId: string) => void
-  selectedCategory: string | null
+  onSelect: (category: ExpenseCategory) => void
+  selectedCategory: ExpenseCategory | null
 }
 
 export const CategoryModal: React.FC<CategoryModalProps> = ({
@@ -23,25 +25,54 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
   onSelect,
   selectedCategory
 }) => {
-  const categories = useCategoryStore((state) => state.categories)
+  const [searchQuery, setSearchQuery] = useState('')
+  const { initDefaults } = useCategories()
+  const filteredCategories = useCategorySearch(searchQuery)
 
-  const renderCategory = ({ item }: { item: any }) => (
+  // Inicializar categorías por defecto si no hay ninguna
+  React.useEffect(() => {
+    initDefaults()
+  }, [initDefaults])
+
+  const handleSelect = (category: ExpenseCategory) => {
+    onSelect(category)
+    onClose()
+    setSearchQuery('')
+  }
+
+  const renderCategory = ({ item }: { item: ExpenseCategory }) => (
     <TouchableOpacity
       style={[
         styles.categoryItem,
-        selectedCategory === item.id && styles.selectedCategory
+        selectedCategory?.id === item.id && styles.selectedCategory,
+        !item.isActive && styles.inactiveCategory
       ]}
-      onPress={() => onSelect(item.id)}>
+      onPress={() => handleSelect(item)}
+      disabled={!item.isActive}>
       <View style={[styles.categoryIcon, { backgroundColor: item.color }]}>
         <Text style={styles.categoryEmoji}>{item.icon}</Text>
       </View>
       <View style={styles.categoryInfo}>
-        <Text style={styles.categoryName}>{item.name}</Text>
+        <Text
+          style={[styles.categoryName, !item.isActive && styles.inactiveText]}>
+          {item.name}
+        </Text>
         {item.budget && (
-          <Text style={styles.categoryBudget}>Budget: ${item.budget}</Text>
+          <Text
+            style={[
+              styles.categoryBudget,
+              !item.isActive && styles.inactiveText
+            ]}>
+            Presupuesto: ${item.budget}
+          </Text>
+        )}
+        {!item.isActive && (
+          <Text style={styles.inactiveLabel}>Desactivada</Text>
         )}
       </View>
-      {selectedCategory === item.id && <Text style={styles.checkmark}>✓</Text>}
+      {selectedCategory?.id === item.id && (
+        <Text style={styles.checkmark}>✓</Text>
+      )}
     </TouchableOpacity>
   )
 
@@ -53,14 +84,24 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
       onRequestClose={onClose}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Select Category</Text>
+          <Text style={styles.title}>Seleccionar Categoría</Text>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>✕</Text>
           </TouchableOpacity>
         </View>
 
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder='Buscar categorías...'
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholderTextColor='#6B7280'
+          />
+        </View>
+
         <FlatList
-          data={categories}
+          data={filteredCategories.filter((cat) => cat.isActive !== false)}
           renderItem={renderCategory}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
@@ -148,5 +189,28 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#8B5CF6',
     fontWeight: 'bold'
+  },
+  searchContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 16
+  },
+  searchInput: {
+    backgroundColor: '#1F2937',
+    borderRadius: 12,
+    padding: 12,
+    color: '#FFFFFF',
+    fontSize: 16
+  },
+  inactiveCategory: {
+    opacity: 0.5
+  },
+  inactiveText: {
+    color: '#6B7280'
+  },
+  inactiveLabel: {
+    fontSize: 12,
+    color: '#DC2626',
+    fontWeight: '500',
+    marginTop: 2
   }
 })

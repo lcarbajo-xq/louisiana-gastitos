@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { v4 as uuidv4 } from 'uuid'
+import uuid from 'react-native-uuid'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
@@ -25,7 +25,7 @@ export const useExpenseStore = create<ExpenseStore>()(
         set((state) => {
           const newExpense: Expense = {
             ...expense,
-            id: uuidv4(),
+            id: uuid.v4() as string,
             date: new Date(expense.date)
           }
           state.expenses.push(newExpense)

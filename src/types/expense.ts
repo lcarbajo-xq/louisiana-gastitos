@@ -16,6 +16,39 @@ export interface ExpenseCategory {
   icon: string
   color: string
   budget?: number
+  isDefault?: boolean
+  isActive?: boolean
+  keywords?: string[] // Para ML categorization
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+export interface CategoryStats {
+  categoryId: string
+  totalSpent: number
+  transactionCount: number
+  averageAmount: number
+  lastUsed?: Date
+  monthlyTrend: number // percentage change from last month
+}
+
+export interface CategoryFilter {
+  name?: string
+  minBudget?: number
+  maxBudget?: number
+  isActive?: boolean
+  hasTransactions?: boolean
+  dateRange?: {
+    start: Date
+    end: Date
+  }
+}
+
+export interface MLCategoryPrediction {
+  categoryId: string
+  confidence: number
+  matchedKeywords: string[]
+  reasoning?: string
 }
 
 export interface CategoryBreakdown {

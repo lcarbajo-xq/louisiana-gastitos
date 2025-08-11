@@ -15,12 +15,14 @@ import {
 import { CategoryModal } from '../src/components/CategoryModal'
 import { DatePicker } from '../src/components/DatePicker'
 import { SuccessMessage } from '../src/components/SuccessMessage'
-import { useCategoryStore } from '../src/store/categoryStore'
+import { useCategories } from '../src/hooks/useCategories'
 import { useExpenseStore } from '../src/store/expenseStore'
+import { ExpenseCategory } from '../src/types/expense'
 
 export default function AddExpenseScreen() {
   const [amount, setAmount] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] =
+    useState<ExpenseCategory | null>(null)
   const [description, setDescription] = useState('')
   const [date, setDate] = useState(new Date())
   const [showCategoryModal, setShowCategoryModal] = useState(false)
@@ -28,11 +30,12 @@ export default function AddExpenseScreen() {
   const [showSuccess, setShowSuccess] = useState(false)
 
   const addExpense = useExpenseStore((state) => state.addExpense)
-  const categories = useCategoryStore((state) => state.categories)
+  const { initDefaults } = useCategories()
 
-  const selectedCategoryData = categories.find(
-    (cat) => cat.id === selectedCategory
-  )
+  // Inicializar categorías por defecto si es necesario
+  React.useEffect(() => {
+    initDefaults()
+  }, [initDefaults])
 
   const handleAmountChange = (value: string) => {
     // Permitir solo números y punto decimal
@@ -54,24 +57,18 @@ export default function AddExpenseScreen() {
     const numericAmount = parseFloat(amount)
 
     if (!amount || numericAmount <= 0) {
-      Alert.alert('Error', 'Please enter a valid amount')
+      Alert.alert('Error', 'Por favor ingresa un monto válido')
       return
     }
 
     if (!selectedCategory) {
-      Alert.alert('Error', 'Please select a category')
-      return
-    }
-
-    const categoryData = categories.find((cat) => cat.id === selectedCategory)
-    if (!categoryData) {
-      Alert.alert('Error', 'Invalid category selected')
+      Alert.alert('Error', 'Por favor selecciona una categoría')
       return
     }
 
     addExpense({
       amount: numericAmount,
-      category: categoryData,
+      category: selectedCategory,
       description: description.trim(),
       date,
       paymentMethod: 'card'
@@ -128,23 +125,25 @@ export default function AddExpenseScreen() {
               style={[
                 styles.categorySelector,
                 selectedCategory && {
-                  backgroundColor: selectedCategoryData?.color + '40',
-                  borderColor: selectedCategoryData?.color
+                  backgroundColor: selectedCategory.color + '40',
+                  borderColor: selectedCategory.color
                 }
               ]}
               onPress={() => setShowCategoryModal(true)}>
-              <View
-                style={[
-                  styles.categoryIcon,
-                  { backgroundColor: selectedCategoryData?.color || '#8B5CF6' }
-                ]}>
-                <Text style={styles.categoryEmoji}>
-                  {selectedCategoryData?.icon || '⭐'}
+              <View style={styles.categoryContent}>
+                <View
+                  style={[
+                    styles.categoryIcon,
+                    { backgroundColor: selectedCategory?.color || '#8B5CF6' }
+                  ]}>
+                  <Text style={styles.categoryIconText}>
+                    {selectedCategory?.icon || '⭐'}
+                  </Text>
+                </View>
+                <Text style={styles.categoryName}>
+                  {selectedCategory?.name || 'Seleccionar Categoría'}
                 </Text>
               </View>
-              <Text style={styles.categoryText}>
-                {selectedCategoryData?.name || 'Select Category'}
-              </Text>
               <Text style={styles.chevron}>›</Text>
             </TouchableOpacity>
 
@@ -195,8 +194,8 @@ export default function AddExpenseScreen() {
       <CategoryModal
         visible={showCategoryModal}
         onClose={() => setShowCategoryModal(false)}
-        onSelect={(categoryId: string) => {
-          setSelectedCategory(categoryId)
+        onSelect={(category: ExpenseCategory) => {
+          setSelectedCategory(category)
           setShowCategoryModal(false)
         }}
         selectedCategory={selectedCategory}
@@ -310,6 +309,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     fontFamily: 'Helvetica'
+  },
+  categoryContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1
+  },
+  categoryIconText: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    fontWeight: '600'
+  },
+  categoryName: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#FFFFFF',
+    flex: 1
   },
   chevron: {
     color: '#FFFFFF',
