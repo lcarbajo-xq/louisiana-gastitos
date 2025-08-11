@@ -26,6 +26,14 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name='onboarding' options={{ headerShown: false }} />
         <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+        <Stack.Screen
+          name='add'
+          options={{
+            presentation: 'modal',
+            headerShown: false,
+            gestureEnabled: true
+          }}
+        />
         <Stack.Screen name='+not-found' />
       </Stack>
       <StatusBar style='auto' />

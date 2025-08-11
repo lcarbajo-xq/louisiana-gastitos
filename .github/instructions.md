@@ -9,7 +9,7 @@ Asegúrate de que el código generado siga las convenciones de estilo y formato 
 - Uso adecuado de espacios, tabulaciones y saltos de línea.
 - Comentarios claros y útiles.
 - Estructura de carpetas y archivos coherente con el proyecto.
-  Cuando apliques cambios, asegurate de cerrar sesions de servidor abiertas y reiniciar el servidor de desarrollo si es necesario para que los cambios surtan efecto.
+  Cuando apliques cambios, asegurate de cerrar sesiones de servidor abiertas y reiniciar el servidor de desarrollo si es necesario para que los cambios surtan efecto.
   Separación por entorno: desarrollo, pruebas y producción.
 - Configuración de variables de entorno para cada entorno.
 - Uso de archivos de configuración específicos para cada entorno.

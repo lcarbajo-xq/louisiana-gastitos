@@ -1,46 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { v4 as uuidv4 } from 'uuid'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { ExpenseCategory } from '../types'
-
-const DEFAULT_CATEGORIES: ExpenseCategory[] = [
-  {
-    id: 'food',
-    name: 'Food',
-    icon: '🍕',
-    color: '#F59E0B'
-  },
-  {
-    id: 'shopping',
-    name: 'Shopping',
-    icon: '🛍️',
-    color: '#EC4899'
-  },
-  {
-    id: 'transport',
-    name: 'Transport',
-    icon: '🚗',
-    color: '#8B5CF6'
-  },
-  {
-    id: 'health',
-    name: 'Health & Fitness',
-    icon: '💪',
-    color: '#6366F1'
-  },
-  {
-    id: 'education',
-    name: 'Education',
-    icon: '📚',
-    color: '#3B82F6'
-  },
-  {
-    id: 'other',
-    name: 'Other',
-    icon: '⚪',
-    color: '#6B7280'
-  }
-]
+import { immer } from 'zustand/middleware/immer'
+import { ExpenseCategory } from '../types/expense'
 
 interface CategoryStore {
   categories: ExpenseCategory[]
@@ -48,49 +11,99 @@ interface CategoryStore {
   updateCategory: (id: string, category: Partial<ExpenseCategory>) => void
   deleteCategory: (id: string) => void
   getDefaultCategories: () => ExpenseCategory[]
-  resetToDefaults: () => void
+  initializeDefaultCategories: () => void
 }
+
+const defaultCategories: Omit<ExpenseCategory, 'id'>[] = [
+  {
+    name: 'Food',
+    icon: '🍕',
+    color: '#F59E0B',
+    budget: 500
+  },
+  {
+    name: 'Shopping',
+    icon: '🛍️',
+    color: '#EC4899',
+    budget: 300
+  },
+  {
+    name: 'Transport',
+    icon: '🚗',
+    color: '#10B981',
+    budget: 200
+  },
+  {
+    name: 'Health & Fitness',
+    icon: '💪',
+    color: '#8B5CF6',
+    budget: 150
+  },
+  {
+    name: 'Education',
+    icon: '📚',
+    color: '#3B82F6',
+    budget: 100
+  },
+  {
+    name: 'Other',
+    icon: '⚡',
+    color: '#6B7280',
+    budget: 100
+  }
+]
 
 export const useCategoryStore = create<CategoryStore>()(
   persist(
-    (set, get) => ({
-      categories: DEFAULT_CATEGORIES,
+    immer((set, get) => ({
+      categories: [],
 
-      addCategory: (category) => {
-        const newCategory: ExpenseCategory = {
-          ...category,
-          id: Date.now().toString()
-        }
-        set((state) => ({
-          categories: [...state.categories, newCategory]
-        }))
-      },
+      addCategory: (category) =>
+        set((state) => {
+          const newCategory: ExpenseCategory = {
+            ...category,
+            id: uuidv4()
+          }
+          state.categories.push(newCategory)
+        }),
 
-      updateCategory: (id, updatedCategory) => {
-        set((state) => ({
-          categories: state.categories.map((category) =>
-            category.id === id ? { ...category, ...updatedCategory } : category
-          )
-        }))
-      },
+      updateCategory: (id, categoryUpdate) =>
+        set((state) => {
+          const index = state.categories.findIndex((cat) => cat.id === id)
+          if (index !== -1) {
+            state.categories[index] = {
+              ...state.categories[index],
+              ...categoryUpdate
+            }
+          }
+        }),
 
-      deleteCategory: (id) => {
-        set((state) => ({
-          categories: state.categories.filter((category) => category.id !== id)
-        }))
-      },
+      deleteCategory: (id) =>
+        set((state) => {
+          state.categories = state.categories.filter((cat) => cat.id !== id)
+        }),
 
       getDefaultCategories: () => {
-        return DEFAULT_CATEGORIES
+        return defaultCategories.map((cat) => ({
+          ...cat,
+          id: uuidv4()
+        }))
       },
 
-      resetToDefaults: () => {
-        set({ categories: DEFAULT_CATEGORIES })
-      }
-    }),
+      initializeDefaultCategories: () =>
+        set((state) => {
+          if (state.categories.length === 0) {
+            state.categories = defaultCategories.map((cat) => ({
+              ...cat,
+              id: uuidv4()
+            }))
+          }
+        })
+    })),
     {
       name: 'category-storage',
-      storage: createJSONStorage(() => AsyncStorage)
+      storage: createJSONStorage(() => AsyncStorage),
+      version: 1
     }
   )
 )

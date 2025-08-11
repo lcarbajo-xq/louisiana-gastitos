@@ -4,7 +4,7 @@ export interface Expense {
   category: ExpenseCategory
   description: string
   date: Date
-  paymentMethod?: 'card' | 'cash' | 'transfer'
+  paymentMethod?: PaymentMethod
   receipt?: string // URL de imagen
   location?: string
   tags?: string[]
@@ -21,18 +21,19 @@ export interface ExpenseCategory {
 export interface CategoryBreakdown {
   categoryId: string
   categoryName: string
-  totalAmount: number
+  amount: number
   percentage: number
+  count: number
   color: string
 }
 
 export interface BudgetStatus {
   categoryId: string
-  budgetAmount: number
-  spentAmount: number
-  remainingAmount: number
-  percentage: number
+  spent: number
+  budget: number
+  remaining: number
   isOverBudget: boolean
+  percentage: number
 }
 
 export interface MonthlyStats {
@@ -69,6 +70,6 @@ export interface BankCredentials {
 }
 
 export type PaymentMethod = 'card' | 'cash' | 'transfer'
-export type ExpensePeriod = 'week' | 'month' | 'year'
+export type Period = 'week' | 'month' | 'year'
 export type Theme = 'light' | 'dark'
 export type ConnectionStatus = 'connected' | 'disconnected' | 'error'
