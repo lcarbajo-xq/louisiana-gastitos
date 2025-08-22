@@ -130,17 +130,17 @@ export default function TabLayout() {
         />
 
         <Tabs.Screen
-          name='savings'
+          name='shared'
           options={{
             title: '',
             tabBarIcon: ({ color }) => (
-              <IconSymbol size={30} name='banknote.fill' color={color} />
+              <IconSymbol size={30} name='person.2.fill' color={color} />
             ),
             tabBarItemStyle: {
               paddingHorizontal: 4,
               minWidth: 50,
-              marginLeft: 40, // Espacio grande antes de savings (donde va el botón flotante)
-              marginRight: 8 // Grupo 2: spacing normal entre savings y profile
+              marginLeft: 40, // Espacio grande antes de shared (donde va el botón flotante)
+              marginRight: 8 // Grupo 2: spacing normal entre shared y profile
             }
           }}
         />
