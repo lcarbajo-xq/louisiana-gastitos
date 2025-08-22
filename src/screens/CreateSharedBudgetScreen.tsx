@@ -10,7 +10,7 @@ import {
   View
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Icon } from '../components/Icon'
+import { Icon } from '../components/ui/base/Icon'
 import { useCategoryStore } from '../store/categoryStore'
 import { useSharedBudgetActions } from '../store/sharedBudgetStore'
 import { useCurrentUser, useUserActions } from '../store/userStore'

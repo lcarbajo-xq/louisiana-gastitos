@@ -1,0 +1,44 @@
+{
+  "tests": [
+    {
+      "name": "Dashboard Loading Performance",
+      "script": "dashboard-performance.js",
+      "duration": 30000
+    },
+    {
+      "name": "Add Expense Flow Performance",
+      "script": "add-expense-performance.js",
+      "duration": 20000
+    },
+    {
+      "name": "Chart Rendering Performance",
+      "script": "chart-performance.js",
+      "duration": 15000
+    },
+    {
+      "name": "Memory Usage Test",
+      "script": "memory-usage.js",
+      "duration": 60000
+    }
+  ],
+  "device": {
+    "platform": "ios",
+    "deviceName": "iPhone 15 Pro"
+  },
+  "metrics": {
+    "cpu": true,
+    "memory": true,
+    "fps": true,
+    "battery": true,
+    "network": true
+  },
+  "thresholds": {
+    "cpu": 80,
+    "memory": 200,
+    "fps": 55
+  },
+  "report": {
+    "format": "json",
+    "output": "performance-reports/"
+  }
+}

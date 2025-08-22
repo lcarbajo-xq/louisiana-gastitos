@@ -1,7 +1,7 @@
 import React from 'react'
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Icon } from '../components/Icon'
+import { Icon } from '../components/ui/base/Icon'
 import { useCurrentUser, useUserActions } from '../store/userStore'
 
 interface ProfileScreenProps {

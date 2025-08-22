@@ -76,32 +76,6 @@ export interface MonthlyStats {
   budgetStatus: BudgetStatus[]
 }
 
-export interface BankAccount {
-  id: string
-  name: string
-  type: 'checking' | 'savings' | 'credit'
-  balance: number
-  currency: string
-  lastSync: Date
-}
-
-export interface BankTransaction {
-  id: string
-  accountId: string
-  amount: number
-  description: string
-  date: Date
-  category?: string
-  merchant?: string
-  isReconciled: boolean
-}
-
-export interface BankCredentials {
-  bankId: string
-  username: string
-  password: string
-}
-
 export type PaymentMethod = 'card' | 'cash' | 'transfer'
 export type Period = 'week' | 'month' | 'year'
 export type Theme = 'light' | 'dark'

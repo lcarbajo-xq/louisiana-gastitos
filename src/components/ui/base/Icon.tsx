@@ -1,14 +1,24 @@
 import {
+  Bell,
   BookOpen,
   Calendar,
   Car,
   Check,
   ChevronRight,
+  Eye,
+  EyeOff,
+  HelpCircle,
+  Lock,
+  LogOut,
   LucideIcon,
+  Mail,
   MoreHorizontal,
   Paperclip,
+  Receipt,
+  Shield,
   ShoppingBag,
   Star,
+  Users,
   Utensils,
   X
 } from 'lucide-react-native'
@@ -34,6 +44,16 @@ export type IconName =
   | 'x'
   | 'calendar'
   | 'paperclip'
+  | 'receipt'
+  | 'mail'
+  | 'lock-closed'
+  | 'eye'
+  | 'eye-slash'
+  | 'users'
+  | 'bell'
+  | 'shield'
+  | 'help-circle'
+  | 'log-out'
 
 const iconMap: Record<IconName, LucideIcon> = {
   utensils: Utensils,
@@ -46,7 +66,17 @@ const iconMap: Record<IconName, LucideIcon> = {
   check: Check,
   x: X,
   calendar: Calendar,
-  paperclip: Paperclip
+  paperclip: Paperclip,
+  receipt: Receipt,
+  mail: Mail,
+  'lock-closed': Lock,
+  eye: Eye,
+  'eye-slash': EyeOff,
+  users: Users,
+  bell: Bell,
+  shield: Shield,
+  'help-circle': HelpCircle,
+  'log-out': LogOut
 }
 
 export const Icon: React.FC<IconProps> = ({

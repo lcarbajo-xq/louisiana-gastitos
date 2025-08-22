@@ -1,9 +1,12 @@
 import React from 'react'
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Icon } from '../components/Icon'
-import { useInvitations } from '../store/sharedBudgetStore'
-import { useUserStore } from '../store/userStore'
+import { Icon } from '../components/ui/base/Icon'
+import {
+  useSharedBudgetActions,
+  useSharedBudgetData
+} from '../store/sharedBudgetStore'
+import { useCurrentUser } from '../store/userStore'
 import { BudgetInvitation } from '../types/user'
 
 interface InvitationsScreenProps {

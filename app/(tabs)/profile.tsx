@@ -1,38 +1,30 @@
-import React from 'react'
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
+import { AuthFlow } from '../../src/screens/AuthFlow'
+import { ManageUsersScreen } from '../../src/screens/ManageUsersScreen'
+import { ProfileScreen } from '../../src/screens/ProfileScreen'
+import { useCurrentUser } from '../../src/store/userStore'
 
-export default function ProfileScreen() {
+export default function ProfileTab() {
+  const [currentScreen, setCurrentScreen] = useState<
+    'profile' | 'manage-users' | 'auth'
+  >('profile')
+  const { isLoggedIn } = useCurrentUser()
+
+  // Si no está logueado, mostrar el flujo de autenticación
+  if (!isLoggedIn) {
+    return <AuthFlow onAuthSuccess={() => setCurrentScreen('profile')} />
+  }
+
+  // Navegación entre pantallas
+  if (currentScreen === 'manage-users') {
+    return <ManageUsersScreen onBack={() => setCurrentScreen('profile')} />
+  }
+
+  // Pantalla principal de perfil
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Perfil</Text>
-        <Text style={styles.subtitle}>Configura tu perfil y preferencias</Text>
-      </View>
-    </SafeAreaView>
+    <ProfileScreen
+      onLogout={() => setCurrentScreen('auth')}
+      onManageUsers={() => setCurrentScreen('manage-users')}
+    />
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF'
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    fontFamily: 'Helvetica',
-    marginBottom: 10
-  },
-  subtitle: {
-    fontSize: 16,
-    fontFamily: 'Helvetica',
-    color: '#666666',
-    textAlign: 'center'
-  }
-})
